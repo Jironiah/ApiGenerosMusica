@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using ApiGenerosMusica.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<ApiGenerosMusicaContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ApiGenerosMusicaContext") ?? throw new InvalidOperationException("Connection string 'ApiGenerosMusicaContext' not found.")));
 
 // Add services to the container.
 
@@ -19,6 +24,12 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials());
 
 app.MapControllers();
 
