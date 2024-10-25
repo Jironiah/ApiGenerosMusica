@@ -4,5 +4,6 @@
     {
         public int Id { get; set; }
         public string NombreGenero { get; set; }
+        public string UrlImagen { get; set; }
     }
 }

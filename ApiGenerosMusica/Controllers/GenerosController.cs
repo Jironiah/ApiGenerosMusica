@@ -20,7 +20,7 @@ namespace ApiGenerosMusica.Controllers
 
         private static List<Generos> generos = new List<Generos>
         {
-            new Generos { Id = 1, NombreGenero="Rock" }
+            new Generos { Id = 1, NombreGenero="Rock", UrlImagen="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuCHUD7n92EwY3bUYC8aTpLgLFs8oVO8Nseg&s" }
         };
 
         public GenerosController(ApiGenerosMusicaContext context)
@@ -53,18 +53,18 @@ namespace ApiGenerosMusica.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Put")]
         [HttpPut]
-        public ActionResult Put([FromBody] Generos updatedProduct)
+        public ActionResult Put([FromBody] Generos generos)
         {
-            var product = generos.FirstOrDefault(p => p.Id == updatedProduct.Id);
+            var product = GenerosController.generos.FirstOrDefault(p => p.Id == generos.Id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            product.NombreGenero = updatedProduct.NombreGenero;
-
+            product.NombreGenero = generos.NombreGenero;
+            product.UrlImagen = generos.UrlImagen;
             return NoContent();
-        }
+        }   
 
         // POST: api/Generos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
