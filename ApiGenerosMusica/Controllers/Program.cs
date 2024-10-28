@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ApiGenerosMusica.Data;
+
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApiGenerosMusicaContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ApiGenerosMusicaContext") ?? throw new InvalidOperationException("Connection string 'ApiGenerosMusicaContext' not found.")));

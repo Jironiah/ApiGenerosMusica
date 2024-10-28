@@ -64,13 +64,13 @@ namespace ApiGenerosMusica.Controllers
             product.NombreGenero = generos.NombreGenero;
             product.UrlImagen = generos.UrlImagen;
             return NoContent();
-        }   
+        }
 
         // POST: api/Generos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Post")]
         [HttpPost]
-        public ActionResult<Generos> Post(Generos genero)
+        public ActionResult<Generos> Post([FromBody]Generos genero)
         {
             genero.Id = generos.Count + 1;
             generos.Add(genero);
