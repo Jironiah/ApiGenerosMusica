@@ -1,0 +1,14 @@
+using System.Drawing;
+using System.IO;
+
+public byte[] ConvertirImagenABytes(string rutaImagen)
+{
+    using (var imagen = Image.FromFile(rutaImagen))
+    {
+        using (var ms = new MemoryStream())
+        {
+            imagen.Save(ms, imagen.RawFormat);
+            return ms.ToArray();
+        }
+    }
+}

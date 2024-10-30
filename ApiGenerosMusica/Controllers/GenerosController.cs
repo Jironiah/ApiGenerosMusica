@@ -20,7 +20,7 @@ namespace ApiGenerosMusica.Controllers
 
         private static List<Generos> generos = new List<Generos>
         {
-            new Generos { Id = 1, NombreGenero="Rock", UrlImagen="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuCHUD7n92EwY3bUYC8aTpLgLFs8oVO8Nseg&s" }
+            // new Generos { Id = 1, NombreGenero="Rock", ImagenBase64= "Aqui va el base64 de ejemplo"}
         };
 
         public GenerosController(ApiGenerosMusicaContext context)
@@ -53,30 +53,74 @@ namespace ApiGenerosMusica.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Put")]
         [HttpPut]
-        public ActionResult Put([FromBody] Generos generos)
+        public ActionResult Put([FromBody] Generos genero)
         {
-            var product = GenerosController.generos.FirstOrDefault(p => p.Id == generos.Id);
-            if (product == null)
+            var generoExistente = generos.FirstOrDefault(p => p.Id == genero.Id);
+            if (generoExistente == null)
             {
                 return NotFound();
             }
 
-            product.NombreGenero = generos.NombreGenero;
-            product.UrlImagen = generos.UrlImagen;
+            generoExistente.NombreGenero = genero.NombreGenero;
+
+            // Actualizar la imagen si se envía en base64
+            if (!string.IsNullOrEmpty(genero.ImagenBase64))
+            {
+                generoExistente.Imagen = Convert.FromBase64String(genero.ImagenBase64);
+            }
+
             return NoContent();
         }
+
 
         // POST: api/Generos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("api/Post")]
         [HttpPost]
-        public ActionResult<Generos> Post([FromBody]Generos genero)
+        public ActionResult<Generos> Post([FromBody] Generos genero)
         {
-            genero.Id = generos.Count + 1;
-            generos.Add(genero);
-            //var jsonData = JsonSerializer.Serialize(generos, new JsonSerializerOptions { WriteIndented = true });
+            try
+            {
+                // Convertir la imagen de base64 a byte[] si está presente
+                if (!string.IsNullOrEmpty(genero.ImagenBase64))
+                {
+                    // Asegúrate de que la cadena es válida antes de intentar convertirla
+                    try
+                    {
+                        genero.Imagen = Convert.FromBase64String(genero.ImagenBase64);
+                    }
+                    catch (FormatException ex)
+                    {
+                        // Aquí puedes manejar el error adecuadamente
+                        Console.WriteLine($"Error al convertir Base64: {ex.Message}");
+                        return BadRequest("La cadena Base64 no es válida.");
+                    }
+                }
 
-            return CreatedAtAction(nameof(Get), new { id = genero.Id }, genero);
+                // Verificar si el objeto recibido es nulo
+                if (genero == null)
+                {
+                    return BadRequest("El objeto 'genero' es nulo.");
+                }
+
+                // Convertir la imagen de base64 a byte[] si está presente
+                if (!string.IsNullOrEmpty(genero.ImagenBase64))
+                {
+                    genero.Imagen = Convert.FromBase64String(genero.ImagenBase64);
+                }
+
+                // Generar un nuevo ID y agregar el género a la lista
+                genero.Id = generos.Count + 1;
+                generos.Add(genero);
+
+                return CreatedAtAction(nameof(Get), new { id = genero.Id }, genero);
+            }
+            catch (Exception ex)
+            {
+                // Log el error (puedes usar un logger o simplemente escribir en la consola)
+                Console.WriteLine(ex.Message);
+                return StatusCode(500, "Error interno del servidor: " + ex.Message);
+            }
         }
 
         // DELETE: api/Generos/5
